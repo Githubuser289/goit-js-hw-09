@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const datetimePicker = document.querySelector('input#datetime-picker');
 const startBtn = document.querySelector('button[data-start]');
@@ -18,11 +19,16 @@ function displayMsg(message) {
   spanDisplay.innerText = '      ' + message;
 }
 
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
+
 function onClose(selectedDates) {
   selectedTime = selectedDates[0];
   startTime = Date.now();
   if (selectedTime < startTime) {
     displayMsg('Please choose a date in the future !');
+    // Notify.failure('Please choose a date in the future');
     startBtn.disabled = true;
     return;
   }
@@ -39,7 +45,6 @@ function startTimer() {
     if (interval < 0) {
       clearInterval(timerId);
       displayMsg('Countdown timer finished !');
-      startBtn.disabled = false;
       datetimePicker.disabled = false;
       return;
     }
@@ -50,21 +55,10 @@ function startTimer() {
     var minz = Math.floor((interval % (1000 * 60 * 60)) / (1000 * 60));
     var secz = Math.floor((interval % (1000 * 60)) / 1000);
 
-    if (dayz < 10) {
-      dayz = '0' + dayz;
-    }
-    if (hourz < 10) {
-      hourz = '0' + hourz;
-    }
-    if (minz < 10) {
-      minz = '0' + minz;
-    }
-    if (secz < 10) {
-      secz = '0' + secz;
-    }
-    hours.innerText = hourz;
-    mins.innerText = minz;
-    secs.innerText = secz;
+    days.innerText = addLeadingZero(dayz);
+    hours.innerText = addLeadingZero(hourz);
+    mins.innerText = addLeadingZero(minz);
+    secs.innerText = addLeadingZero(secz);
   }, 1000);
 }
 
